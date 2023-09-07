@@ -8,6 +8,7 @@ const addActionButton = cancelActionButton.nextElementSibling;
 const userInputs = addMovieModal.querySelectorAll("input");
 const cardMovieHolder = document.getElementById("entry-text");
 const listRoot = document.getElementById("movie-list");
+const deleteMovieModal = document.getElementById("delete-modal");
 
 const movies = [];
 
@@ -18,7 +19,11 @@ const updateUI = () => {
 		cardMovieHolder.style.display = "none";
 	}
 };
-const deleteMovieHandler = (movieId) => {
+const cancelMovieDeletion = () => {
+	toggleBackdrop();
+	deleteMovieModal.classList.remove("visible");
+};
+const deleteMovie = (movieId) => {
 	let movieIndex = 0;
 	for (const movie of movies) {
 		if (movie.id === movieId) {
@@ -29,6 +34,11 @@ const deleteMovieHandler = (movieId) => {
 	movies.splice(movieIndex, 1);
 	listRoot.children[movieIndex].remove();
 	// listRoot.removeChild(listRoot.children[movieIndex]);
+};
+const deleteMovieHandler = (movieId) => {
+	deleteMovieModal.classList.add("visible");
+	toggleBackdrop();
+	// deleteMovie(movieId);
 };
 
 const renderNewMovieEl = (id, title, image, rating) => {
@@ -49,8 +59,11 @@ const renderNewMovieEl = (id, title, image, rating) => {
 const toggleBackdrop = () => {
 	backdrop.classList.toggle("visible");
 };
-const toggleMovieModal = () => {
-	addMovieModal.classList.toggle("visible");
+const closeMovieModal = () => {
+	addMovieModal.classList.remove("visible");
+};
+const showMovieModal = () => {
+	addMovieModal.classList.add("visible");
 	toggleBackdrop();
 };
 const clearMovieInputs = () => {
@@ -59,7 +72,7 @@ const clearMovieInputs = () => {
 	}
 };
 const cancelActionHandler = () => {
-	toggleMovieModal();
+	closeMovieModal();
 	clearMovieInputs();
 };
 
@@ -88,7 +101,8 @@ const addActionHandler = () => {
 
 	movies.push(newMovie);
 	console.log(movies);
-	toggleMovieModal();
+	toggleBackdrop();
+	closeMovieModal();
 	clearMovieInputs();
 	renderNewMovieEl(
 		newMovie.id,
@@ -100,9 +114,10 @@ const addActionHandler = () => {
 };
 
 const backdropClickHandler = () => {
-	toggleMovieModal();
+	closeMovieModal();
+	cancelMovieDeletion();
 };
-movieButtonActions.addEventListener("click", toggleMovieModal);
+movieButtonActions.addEventListener("click", showMovieModal);
 backdrop.addEventListener("click", backdropClickHandler);
 cancelActionButton.addEventListener("click", cancelActionHandler);
 addActionButton.addEventListener("click", addActionHandler);
